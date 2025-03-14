@@ -51,4 +51,4 @@ stdout_logfile=/var/log/worker1.log
 # "Бонус": Мониторинг работы
 [График количества задач в очереди на отправку и количества воркеров](http://test-case1.tale.webtricks.pro/)
 
-![Скриншот графика](Screensho_1.jpg)
+![Скриншот графика](Screenshot_1.jpg)
