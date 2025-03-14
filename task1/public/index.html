@@ -1,0 +1,92 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Типа Grafana =)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h1>Типа Grafana</h1>
+<div style="width: 800px; height: 600px;">
+
+    <canvas id="monitor"></canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('monitor');
+
+    let chart = null;
+
+    async function updateCart() {
+        const response = await fetch('/monitor_data.php');
+        const result = await response.json();
+        if (!result.success) {
+            alert(result.message);
+            return;
+        }
+
+        const data = result.data;
+
+        if (chart === null) {
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'QueueDay1',
+                        data: data.q1,
+                        borderWidth: 1,
+                        yAxisID: 'y',
+                    }, {
+                        label: 'QueueDay3',
+                        data: data.q3,
+                        borderWidth: 1,
+                        yAxisID: 'y',
+                    }, {
+                        label: 'WorkersDay1',
+                        data: data.w1,
+                        borderWidth: 1,
+                        yAxisID: 'y1',
+                    }, {
+                        label: 'WorkersDay3',
+                        data: data.w3,
+                        borderWidth: 1,
+                        yAxisID: 'y1',
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false, // only want the grid lines for one axis to show up
+                            },
+                        }
+                    }
+                }
+            });
+        } else {
+            chart.data.labels = data.labels;
+            chart.data.datasets[0].data = data.q1;
+            chart.data.datasets[1].data = data.q3;
+            chart.data.datasets[2].data = data.w1;
+            chart.data.datasets[3].data = data.w3;
+
+            chart.update();
+        }
+    }
+
+    updateCart();
+
+    setInterval(updateCart, 60000);
+</script>
+</body>
+</html>
